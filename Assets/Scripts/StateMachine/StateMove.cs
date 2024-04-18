@@ -5,6 +5,7 @@ public class StateMove : BaseState
     public StateMove(StateMachine stateMachine, EnemyActions enemyActions, VitalitySystem vitalitySystem)
         : base(stateMachine, enemyActions, vitalitySystem) { }
 
+
     public override void UpdateState()
     {
         Vector3 direction = (_enemyActions.Target.position - _enemyActions.transform.position).normalized;

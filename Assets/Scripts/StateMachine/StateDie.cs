@@ -16,6 +16,7 @@ public class StateDie : BaseState
         if (_timer >= _endOfAnimTime)
         {
             _enemyActions.gameObject.SetActive(false);
+            _enemyActions.ResetCharacter();
             _stateMachine.SwitchState(_enemyActions.StateCheckDirection);
         }
     }

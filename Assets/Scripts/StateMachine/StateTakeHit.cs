@@ -10,8 +10,8 @@ public class StateTakeHit : BaseState
 
     public override void UpdateState()
     {
-        _enemyActions.Animator.SetTrigger(_enemyActions.HurtAnim);
         _timer += Time.deltaTime;
+        _enemyActions.Animator.SetTrigger(_enemyActions.HurtAnim);
 
         if (_timer >= _endOfAnimTime)
         {

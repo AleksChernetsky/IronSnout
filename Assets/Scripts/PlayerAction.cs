@@ -10,15 +10,19 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private int _damage;
     [SerializeField] private float _attackSpeed = 0.16f;
     [SerializeField] private float _noInputTime = 0.5f;
+    [SerializeField] private LayerMask _enemyLayer;
     [SerializeField] private Transform _hitPoint;
+    [SerializeField] private AudioClip[] _hookSound;
+    [SerializeField] private AudioClip[] _hitSound;
 
     private Animator _animator;
     private VitalitySystem _vitalitySystem;
+    private AudioSource _audioSource;
     private List<Collider2D> _enemyColliders = new List<Collider2D>();
-    public LayerMask _enemyLayer;
 
     private int _hitCount;
     private float _timer;
+    private bool _hitOnEnemy;
 
     private bool RightArrowClick => Input.GetKeyDown(KeyCode.RightArrow);
     private bool LeftArrowClick => Input.GetKeyDown(KeyCode.LeftArrow);
@@ -29,6 +33,7 @@ public class PlayerAction : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _vitalitySystem = GetComponent<VitalitySystem>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -46,7 +51,7 @@ public class PlayerAction : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        CheckEnemy();        
+        CheckEnemy();
     }
     public void TakeDamage(int damage)
     {
@@ -73,25 +78,30 @@ public class PlayerAction : MonoBehaviour
             if (enemy.TryGetComponent(out VitalitySystem vitalitySystem))
             {
                 vitalitySystem.TakeDamage(_damage);
+                _hitOnEnemy = true;
             }
         }
-        if (_hitCount == 0)
+        switch (_hitCount)
         {
-            _animator.SetTrigger(Punch1Anim);
+            case 0:
+                _animator.SetTrigger(Punch1Anim);
+                break;
+            case 1:
+                _animator.SetTrigger(Punch2Anim);
+                break;
+            case 2:
+                _animator.SetTrigger(PunchComboAnim);
+                break;
+            case > 2:
+                _hitCount = 0;
+                goto case 0;
         }
-        if (_hitCount == 1)
-        {
-            _animator.SetTrigger(Punch2Anim);
-        }
-        if (_hitCount == 2)
-        {
-            _animator.SetTrigger(PunchComboAnim);
-            _hitCount = 0;
-            _timer = 0;
-            yield break;
-        }
+
+        HitSound(_hitCount, _hitOnEnemy);
         _hitCount++;
         _timer = 0;
+        _hitOnEnemy = false;
+        yield break;
     }
     private void ResetCombo()
     {
@@ -105,6 +115,18 @@ public class PlayerAction : MonoBehaviour
         for (int i = 0; i < _hits.Length; i++)
         {
             _enemyColliders.Add(_hits[i].collider);
+        }
+    }
+    private void HitSound(int HitCount, bool HitOnEnemy)
+    {
+        _audioSource.pitch = Random.Range(0.8f, 1.2f);
+        if (HitOnEnemy)
+        {
+            _audioSource.PlayOneShot(_hitSound[HitCount]);
+        }
+        else
+        {
+            _audioSource.PlayOneShot(_hookSound[HitCount]);
         }
     }
 }

@@ -24,14 +24,17 @@ public class VitalitySystem : MonoBehaviour
             OnTakeDamage?.Invoke();
             OnDecreaseHealth?.Invoke(damage);
             HealthPercentage = CurrentHealth / MaxHealth;
+            GlobalEvents.CallOnHitEvent();
         }
-        else if (CurrentHealth <= 0)
+        if (CurrentHealth <= 0)
         {
             OnDeath?.Invoke();
             GlobalEvents.CallOnDieEvent();
-            CurrentHealth = MaxHealth;
         }
+    }
+    public void ResetCharacter()
+    {
+        CurrentHealth = MaxHealth;
     }
 }
 
- 

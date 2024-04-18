@@ -24,7 +24,7 @@ public class EnemySpawner : MonoBehaviour
     private void Update()
     {
         _timer += Time.deltaTime;
-        if (_timer >= _randomSpawnTime)
+        if (_timer >= _randomSpawnTime && Time.timeScale != 0)
         {
             GetEnemy().SetActive(true);
             _randomSpawnTime = UnityEngine.Random.Range(_spawnSpeedMin, _spawnSpeedMax);
@@ -76,11 +76,11 @@ public class EnemySpawner : MonoBehaviour
     }
     private void DecreaseSpawnTime()
     {
-        if (_spawnSpeedMin > 1)
+        if (_spawnSpeedMin > 0.5f)
         {
             _spawnSpeedMin -= 0.1f;
         }
-        if (_spawnSpeedMax > 3)
+        if (_spawnSpeedMax > 1)
         {
             _spawnSpeedMax -= 0.1f;
         }

@@ -11,7 +11,6 @@ public class StateCheckDirection : BaseState
         if (direction.x > 0)
         {
             _enemyActions.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            //_enemyActions.MovementSpeed *= -1;
         }
         else
         {
